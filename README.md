@@ -1,63 +1,64 @@
-- Purpose: Open new tabs in terminal and excute custom commands automatically on the background that remain alive even after the terminal is exited. Send command output to either nohup.out or the /dev/null black hole.
+# Auto Startup Daemon
+
+- Purpose: This deamon executes custom commands automatically on the background that remain alive even after the terminal is exited. It sends command output to either nohup.out, the /dev/null black hole, or a custom file, depending on the option selected by the user.
 - Author: Okwufulueze Emeka Daniel
-- Date: 19/03/2017
+- Date: 14/05/2017
 
 
-# Install xdotool
-```
-  sudo apt-get install xdotool
-```
+# Usage:
+        auto-startupd [-h | --help]
+        auto-startupd [-c | --command quoted-semicolon-separated-commands]
+        auto-startupd [-f | --file-name fileName]
+        auto-startupd [-c | --command quoted-semicolon-separated-commands]
+                [[-b | --black-hole] | [-n | --nohup] | [-o | --output file-path]]
+        auto-startupd [-f | --file-name fileName]
+                [[-b | --black-hole] | [-n | --nohup] | [-o | --output file-path]]
 
-# Clone this repo or start from scratch:
-You can simply clone this repo and modify as necessary or you can start from scratch and create your own shell script, say background-auto-startup like I have in this repo.
-```
-  touch background-auto-startup
-  sudo chmod +x background-auto-startup
-```
+# Options:
+        # -c | --command:
+        This option receives the list of your custom commands in
+        quoted string all separated by semicolons [;].
+        For example: auto-startupd -c "cd daniel; do_something; do_another_thing".
 
-# If you started from scratch with your file named 'background-auto-startup' for instance, place the script below in background-auto-startup.
-```
-#!/bin/bash
-# The SHELL_COMMANDS variable below is an array of commands you want to execute on new tabs. I have written out some for example. Remember to separate the array values with spaces
+        # -f | --file-name:
+        This option receives the name of the file containing
+        all the commands you want to run.
+        Each command in the file should take a
+        line [separate commands with new line characters].
 
-# Make the processes background jobs with either nohup or the disown parenthesis notation in order to continue execution even after the terminal is exited.
+        # -h | --help:
+        This option displays this help page.
 
+# Flags:
+        # -b | --black-hole:
+        If this flag is set, then all output from the
+        running processes will be redirected to the /dev/null black-hole.
 
-# To send output to nohup.out. Ensure you precede each command with 'nohup ', and end them with ' &' for any command you need to survive terminal exit. For example: nohup npm run dev &
-# SHELL_COMMANDS=('cdyanpals; nohup npm run dev &' 'cdwscore; nohup sh serverd.sh &' 'cdwscore; nohup php worker.php &' 'nohup mysql-workbench &');
+        # -n | --nohup:
+        This flag creates a nohup.out file in the working
+        directories of the running processes and redirects all output
+        from the running processes to the nohup.out file.
 
+        # -o | --output:
+        The --output flag takes the path of the file you
+        intend to use for output of running processes.
+        If the file does not exist, it will be created.
+        All output from the running processes will be redirected
+        to the specified file of the --output flag.
 
-# To send output to the /dev/null black hole. Ensure you place each command in parenthesis and end them with ' &>/dev/null &' for any command you need to survive terminal exit. For example: (npm run dev &>/dev/null &)
-SHELL_COMMANDS=('cdyanpals; (npm run dev &>/dev/null &)' 'cdwscore; (sh serverd.sh &>/dev/null &)' 'cdwscore; (php worker.php &>/dev/null &)' '(mysql-workbench &>/dev/null &)');
+# Installation:
+        Clone this repo.
+        Add auto-startupd to your PATH so you can simply execute it from anywhere in your terminal by entering the following in your shell rc file, say bashrc, zshrc, etc:
+        export PATH=$PATH:~/path/to/auto-startupd
+        
 
+        On your terminal, source the rc file thus [~/.bashrc for example]:
+        source ~/.bashrc
+        
 
-# Loop through the array of commands and execute each one on a new tab
-for ((i = 0; i < ${#SHELL_COMMANDS[@]}; i++)); do
-  SHELL_COMMAND=${SHELL_COMMANDS[$i]};
-  xdotool key ctrl+shift+t;
-  sleep 1;
-  xdotool type --delay 1 --clearmodifiers "${SHELL_COMMAND}";
-  xdotool key Return;
-done
-```
+        You can now execute auto-startupd by simply typing the command below on your terminal:
+        auto-startupd [option] [flag]
+        
 
-# If you didn't start from scratch [meaning you cloned this repo], simply proceed to the next step
-
-# Execute the script from its parent directory
-On your terminal, in the directory containing background-auto-startup, simply execute the script by:
-```
-  ./background-auto-startup
-```
-
-# Execute the script from any directory
-You can also add background-auto-startup to your PATH so you can just execute it from anywhere in your terminal by entering the following:
-```
-  export PATH=$PATH:~/directory-name
-  # where directory-name is the name of the directory containing background-auto-startup
-```
-After which you can execute background-auto-startup by simply typing the command below on your terminal:
-```
-  background-auto-startup
-```
-
-Now, even after you close your terminal, the commands in `background-auto-startup` will keep running.
+        # Done.
+        Now, even after you close your terminal, the commands you started in auto-startupd daemon will keep running.

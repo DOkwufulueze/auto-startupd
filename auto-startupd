@@ -1,0 +1,170 @@
+#!/bin/bash
+# Auto Startup Daemon
+# Purpose: This deamon executes custom commands automatically on the background that remain alive even after the terminal is exited. It sends command output to either nohup.out, the /dev/null black hole, or a custom file, depending on the option selected by the user.
+# Author: Okwufulueze Emeka Daniel
+# Date: 14/05/2017
+
+
+outputStream="black-hole";
+outputFile=
+SHELL_COMMANDS=();
+TEMP_SHELL_COMMANDS=();
+helpText=
+
+function createFileIfNotExists() {
+  fileName="$1";
+  test -e "${fileName}" || touch "${fileName}";
+}
+
+function populateShellCommandsFromFile() {
+  while IFS="" read -r fileLine || [[ -n "${fileLine}" ]]; do
+    [[ "${fileLine}" == "" ]] || TEMP_SHELL_COMMANDS+=("${fileLine}");
+  done < "$1";
+}
+
+function getFormattedCommand() {
+  commandItem="$1";
+  regularExpression="(\s*)cd(\s*)";
+  if [[ $commandItem =~ $regularExpression ]]; then
+    return 1;
+  else
+    return 2;
+  fi
+}
+
+function formatShellCommands() {
+  if [[ "${outputStream}" == "nohup" ]]; then
+    for commandItem in "${TEMP_SHELL_COMMANDS[@]}"; do
+      getFormattedCommand "${commandItem}";
+      FORMATTED_COMMAND_CODE=$?;
+      [[ "${FORMATTED_COMMAND_CODE}" -eq "1" ]] && commandItem="${commandItem}" || commandItem="nohup ${commandItem} &";
+      SHELL_COMMANDS+=("${commandItem}");
+    done
+  elif [[ "${outputStream}" == "black-hole" ]]; then
+    for commandItem in "${TEMP_SHELL_COMMANDS[@]}"; do
+      getFormattedCommand "${commandItem}";
+      FORMATTED_COMMAND_CODE=$?;
+      [[ "${FORMATTED_COMMAND_CODE}" -eq "1" ]] && commandItem="${commandItem}" || commandItem="${commandItem} &>/dev/null &";
+      SHELL_COMMANDS+=("${commandItem}");
+    done
+  elif [[ "${outputStream}" == "custom" ]]; then
+    createFileIfNotExists "$outputFile";    
+    for commandItem in "${TEMP_SHELL_COMMANDS[@]}"; do
+      getFormattedCommand "${commandItem}";
+      FORMATTED_COMMAND_CODE=$?;
+      [[ "${FORMATTED_COMMAND_CODE}" -eq "1" ]] && commandItem="${commandItem}" || commandItem="${commandItem} &>>${outputFile} &";
+      SHELL_COMMANDS+=("${commandItem}");
+    done
+  fi
+}
+
+displayHowToUse() {
+  helpText=$(cat<< EOF
+
+
+
+            Auto Startup Daemon
+            Version: 1.0
+            Usage:  auto-startupd [-h | --help]
+                    auto-startupd [-c | --command quoted-semicolon-separated-commands]
+                    auto-startupd [-f | --file-name fileName]
+                    auto-startupd [-c | --command quoted-semicolon-separated-commands]
+                            [[-b | --black-hole] | [-n | --nohup] | [-o | --output file-path]]
+                    auto-startupd [-f | --file-name fileName]
+                            [[-b | --black-hole] | [-n | --nohup] | [-o | --output file-path]]
+    
+    
+            Synopsis:
+              Purpose: This deamon opens new tabs in terminal and
+              excutes custom commands automatically on the background
+              that remain alive even after the terminal is exited.
+              It sends command output to either nohup.out, the /dev/null black hole,
+              or a custom file, depending on the option selected by the user.
+    
+              Options:
+                -c | --command: This option receives the list of your custom commands in
+                quoted string all separated by semicolons [;].
+                For example: auto-startupd -c "cd daniel; do_something; do_another_thing".
+
+                -f | --file-name: This option receives the name of the file containing
+                all the commands you want to run.
+                Each command in the file should take a
+                line [separate commands with new line characters].
+
+                -h | --help: This option displays this help page.
+
+              Flags:
+                -b | --black-hole: If this flag is set, then all output from the
+                running processes will be redirected to the /dev/null black-hole.
+
+                -n | --nohup: This flag creates a nohup.out file in the working
+                directories of the running processes and redirects all output
+                from the running processes to the nohup.out file.
+
+                -o | --output: The --output flag takes the path of the file you
+                intend to use for output of running processes.
+                If the file does not exist, it will be created.
+                All output from the running processes will be redirected
+                to the specified file of the --output flag.
+                
+
+
+            Author: Okwufulueze Emeka Daniel [https://github.com/DOkwufulueze]
+            Date: 14/05/2017
+            
+EOF
+);
+}
+
+if [[ $# -gt 0 ]]; then
+  while [[ "$1" != "" ]]; do
+    case "$1" in
+      -f | --file-name )
+      shift;
+      populateShellCommandsFromFile "$1";        
+      ;;
+
+      -c | --command )
+      shift;
+      IFS=";" read -ra TEMP_SHELL_COMMANDS <<< "$1"
+      ;;
+
+      -n | --nohup )
+        outputStream="nohup";
+      ;;
+
+      -b | --black-hole )
+        outputStream="black-hole";
+      ;;
+
+      -o | --output )
+        shift;
+        outputStream="custom";
+        outputFile="$1";
+      ;;
+
+      -h | --help )
+        displayHowToUse;
+        echo "${helpText}" | less;
+        exit;
+      ;;
+
+    esac
+
+    shift;
+  done
+
+  formatShellCommands;
+fi
+
+if [[ ${#SHELL_COMMANDS[@]} -gt 0 ]]; then
+  # Loop through the array of commands and execute each one
+  
+  for ((i = 0; i < ${#SHELL_COMMANDS[@]}; i++)); do
+    SHELL_COMMAND="${SHELL_COMMANDS[$i]}";
+    bash -c "${SHELL_COMMAND}" bash;
+    sleep 2;
+  done
+else
+  echo "No Command was supplied to auto-startupd";
+fi
