@@ -4,12 +4,17 @@
 # Author: Okwufulueze Emeka Daniel
 # Date: 14/05/2017
 
-. startup-manager;
 helpText=;
-setupManagerForEntity 'daemon';
+scriptAbsolutePath=;
 
-displayHowToUse() {
-  helpText=$(cat<< EOF
+function getAbsolutePathOfSelf() {
+  pushd $(dirname "$0") > /dev/null;
+  scriptAbsolutePath="$(pwd -P)";
+  popd > /dev/null;
+}
+
+function displayHowToUse() {
+  helpText=$(cat << EOF
 
 
 
@@ -65,6 +70,11 @@ displayHowToUse() {
 EOF
 );
 }
+
+getAbsolutePathOfSelf;
+
+. "${scriptAbsolutePath}/startup-manager";
+setupManagerForEntity 'daemon';
 
 if [[ $# -gt 0 ]]; then
   while [[ "$1" != "" ]]; do
