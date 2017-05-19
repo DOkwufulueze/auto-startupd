@@ -130,7 +130,8 @@ fi
 
 if [[ "${#SHELL_COMMANDS[@]}" -gt 0 ]]; then
   # Loop through the array of commands and execute each one
-  
+
+  echo $$ > "${scriptAbsolutePath}/pid";
   for ((i = 0; i < ${#SHELL_COMMANDS[@]}; i++)); do
     SHELL_COMMAND="${SHELL_COMMANDS[$i]}";
     bash -c "${SHELL_COMMAND}" bash;
