@@ -16,8 +16,6 @@ function getAbsolutePathOfSelf() {
 function displayHowToUse() {
   helpText=$(cat << EOF
 
-
-
             Auto Startup Daemon
             Version: 1.0
             Usage:  auto-startupd [-h | --help]
@@ -30,9 +28,9 @@ function displayHowToUse() {
     
     
             Synopsis:
-              Purpose: This deamon opens new tabs in terminal and
-              excutes custom commands automatically on the background
-              that remain alive even after the terminal is exited.
+              Purpose: This deamon excutes custom commands
+              automatically on the background that remain alive 
+              even after the terminal is exited.
               It sends command output to either nohup.out, the /dev/null black hole,
               or a custom file, depending on the option selected by the user.
     
