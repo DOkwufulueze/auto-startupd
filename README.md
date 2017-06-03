@@ -1,6 +1,6 @@
 # Auto Startup Daemon
 
-- Purpose: This deamon executes custom commands automatically on the background that remain alive even after the terminal is exited. It sends command output to either nohup.out, the /dev/null black hole, or a custom file, depending on the option selected by the user.
+- Purpose: This daemon executes custom commands automatically in the background that remain alive even after the terminal is exited. It sends command output to either nohup.out, the /dev/null black hole, or a custom file, depending on the option selected by the user.
 - Author: Daniel Okwufulueze
 - Date: 14/05/2017
 
