@@ -1,7 +1,7 @@
 #!/bin/bash
 # Auto Startup Daemon
 # Purpose: This deamon executes custom commands automatically on the background that remain alive even after the terminal is exited. It sends command output to either nohup.out, the /dev/null black hole, or a custom file, depending on the option selected by the user.
-# Author: Okwufulueze Emeka Daniel
+# Author: Daniel Okwufulueze
 # Date: 14/05/2017
 
 helpText=;
@@ -17,7 +17,7 @@ function displayHowToUse() {
   helpText=$(cat << EOF
 
             Auto Startup Daemon
-            Version: 1.0
+            Version: 1.0.0
             Usage:  auto-startupd [-h | --help]
                     auto-startupd [-c | --command quoted-semicolon-separated-commands]
                     auto-startupd [-f | --file-name fileName]
@@ -62,7 +62,7 @@ function displayHowToUse() {
                 
 
 
-            Author: Okwufulueze Emeka Daniel [https://github.com/DOkwufulueze]
+            Author: Daniel Okwufulueze [https://github.com/DOkwufulueze]
             Date: 14/05/2017
             
 EOF
