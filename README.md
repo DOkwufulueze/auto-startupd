@@ -63,3 +63,11 @@
 
         # Done.
         Now, even after you close your terminal, the commands you started in auto-startupd daemon will keep running.
+<br><br>
+### Please send bug issues you may encounter to [Issues](https://www.github.com/DOkwufulueze/auto-startupd/issues)
+<br><br>
+## Copyleft
+![Copyleft](/images/copyleft.png) 2017 Daniel Okwufulueze
+<br><br>
+## Licence
+This daemon is distributed under the [GNU GPL-3.0](https://github.com/DOkwufulueze/auto-startupd/blob/master/LICENCE.md) licence
