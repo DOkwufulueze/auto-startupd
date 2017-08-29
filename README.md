@@ -47,22 +47,24 @@
         to the specified file of the --output flag.
 
 # Installation:
-        Clone this repo.
-        Add auto-startupd to your PATH so you can simply execute it from anywhere in your terminal by entering the following in your shell rc file, say bashrc, zshrc, etc:
-        
-        [[ $PATH =~ "path/to/auto-startupd" ]] || export PATH=$PATH:path/to/auto-startupd
-        
+- Clone this repo or download [here](https://github.com/DOkwufulueze/auto-startupd/archive/master.zip)
 
-        On your terminal, source the rc file thus [~/.bashrc for example]:
-        source ~/.bashrc
-        
+        git clone git@github.com:DOkwufulueze/auto-startupd.git
+- `cd` into the cloned or downloaded repo
 
-        You can now execute auto-startupd by simply typing the command below on your terminal:
+        cd path/to/auto-startupd
+- Install the application
+
+        sudo chmod ugo+x install
+        
+        ./install
+- You can now execute auto-startup by simply typing the command below on your terminal:
+
         auto-startupd [option] [flag]
-        
 
-        # Done.
-        Now, even after you close your terminal, the commands you started in auto-startupd daemon will keep running.
+- Done.
+
+Now, even after you close your terminal, the commands you started in auto-startupd daemon will keep running.
 <br><br>
 ### Please send bug issues you may encounter to [Issues](https://www.github.com/DOkwufulueze/auto-startupd/issues)
 <br><br>

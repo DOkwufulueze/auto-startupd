@@ -1,0 +1,8 @@
+#!/bin/bash
+
+workingDirectory=$(pwd);
+
+([[ $PATH =~ '/auto-startupd' ]] && echo 'You already installed auto-startupd') ||
+export PATH="${PATH}:${workingDirectory}";
+
+exec '/bin/bash';
